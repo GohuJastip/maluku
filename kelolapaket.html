@@ -110,8 +110,10 @@
         }
     </style>
 
-    <!-- Include jsPDF Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Include Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"></script>
+
 </head>
 <body>
 
@@ -162,8 +164,30 @@
     </div>
 
     <script>
-        // Ambil data paket dari localStorage, jika tidak ada, buat array kosong
-        let packages = JSON.parse(localStorage.getItem('packages')) || [];
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let packages = [];
+
+        // Mengambil data paket dari Firebase
+        function getPackagesFromFirebase() {
+            db.ref('packages').on('value', (snapshot) => {
+                packages = snapshot.val() || [];
+                displayPackages();
+            });
+        }
 
         // Menampilkan paket dalam tabel
         function displayPackages() {
@@ -208,32 +232,18 @@
                 return;
             }
 
-            // Cek apakah ini form untuk menambah atau mengedit paket
-            const formTitle = document.getElementById('formTitle').innerText;
-            if (formTitle === 'Tambah Paket Baru') {
-                // Tambah paket baru
-                const newId = packages.length ? packages[packages.length - 1].id + 1 : 1;
-                packages.push({ id: newId, receiver, sender, status, resi });
-            } else {
-                // Update paket yang sudah ada
-                const editingPackage = packages.find(pkg => pkg.id === window.editingPackageId);
-                editingPackage.receiver = receiver;
-                editingPackage.sender = sender;
-                editingPackage.status = status;
-                editingPackage.resi = resi;
-            }
+            const newId = packages.length ? packages[packages.length - 1].id + 1 : 1;
+            const newPackage = { id: newId, receiver, sender, status, resi };
 
-            // Simpan data paket ke localStorage
-            localStorage.setItem('packages', JSON.stringify(packages));
+            // Simpan paket ke Firebase
+            db.ref('packages').push(newPackage);
 
             // Tutup form dan tampilkan tabel paket
             cancelForm();
-            displayPackages();
         }
 
         // Fungsi untuk mengedit paket
         function editPackage(id) {
-            window.editingPackageId = id;
             const packageToEdit = packages.find(pkg => pkg.id === id);
             document.getElementById('receiverName').value = packageToEdit.receiver;
             document.getElementById('senderName').value = packageToEdit.sender;
@@ -245,11 +255,12 @@
 
         // Fungsi untuk menghapus paket
         function deletePackage(id) {
-            const confirmDelete = confirm('Apakah Anda yakin ingin menghapus paket ID: ' + id + '?');
-            if (confirmDelete) {
-                packages = packages.filter(pkg => pkg.id !== id);
-                localStorage.setItem('packages', JSON.stringify(packages)); // Simpan perubahan ke localStorage
-                displayPackages();
+            if (confirm(`Apakah Anda yakin ingin menghapus paket ID: ${id}?`)) {
+                db.ref('packages').orderByChild('id').equalTo(id).once('value', (snapshot) => {
+                    snapshot.forEach(childSnapshot => {
+                        childSnapshot.ref.remove();
+                    });
+                });
             }
         }
 
@@ -278,8 +289,8 @@
             doc.save('daftar_paket.pdf');
         }
 
-        // Tampilkan data paket ketika halaman dimuat
-        displayPackages();
+        // Tampilkan data paket saat halaman dimuat
+        getPackagesFromFirebase();
     </script>
 
 </body>
