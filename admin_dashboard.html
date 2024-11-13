@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Jasa Titip</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script> <!-- Pustaka SheetJS -->
     <style>
         /* Basic reset */
         body, h1, h2, p {
@@ -96,6 +97,36 @@
             bottom: 0;
             width: 100%;
         }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        input[type="file"] {
+            margin-bottom: 20px;
+        }
+
+        /* File Name Display */
+        #file-name {
+            margin-top: 10px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -119,26 +150,33 @@
             <h1>Welcome, Admin!</h1>
         </div>
 
-        <!-- Dashboard Content -->
+        <!-- Kelola Paket Content -->
         <div class="card">
-            <h3>Statistik Pengiriman Paket</h3>
-            <p>Total Paket Terkirim: 1243</p>
-            <p>Total Paket Sedang Diproses: 45</p>
-            <p>Total Paket Gagal Dikirim: 10</p>
-        </div>
+            <h3>Kelola Paket</h3>
+            <p>Unggah file Excel untuk memanage paket pengiriman.</p>
 
-        <div class="card">
-            <h3>Informasi Pengguna</h3>
-            <p>Total Pengguna Terdaftar: 512</p>
-            <p>Pengguna Aktif: 348</p>
-            <p>Pengguna Tidak Aktif: 164</p>
-        </div>
+            <!-- Form untuk memilih file Excel -->
+            <input type="file" id="excel-file" accept=".xlsx, .xls">
+            <button onclick="handleFile()">Unggah</button>
 
-        <div class="card">
-            <h3>Kontak Admin</h3>
-            <p>Jika Anda memiliki pertanyaan atau membutuhkan bantuan lebih lanjut, silakan hubungi kami.</p>
-            <p>Email: support@gohu.com</p>
-            <p>Telepon: +628123456789</p>
+            <!-- Display file name -->
+            <div id="file-name"></div>
+
+            <!-- Tabel untuk menampilkan data paket -->
+            <table id="data-paket">
+                <thead>
+                    <tr>
+                        <th>NO</th>
+                        <th>Nama</th>
+                        <th>Nomor WA</th>
+                        <th>No Resi</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data dari Excel akan ditampilkan di sini -->
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -146,6 +184,56 @@
     <div class="footer">
         <p>&copy; 2024 GOHUJASTIP By. Dhani Mochtar</p>
     </div>
+
+    <script>
+        // Fungsi untuk memproses file Excel
+        function handleFile() {
+            var fileInput = document.getElementById('excel-file');
+            var file = fileInput.files[0];
+
+            if (file) {
+                // Menampilkan nama file yang diunggah
+                document.getElementById('file-name').textContent = "File yang diunggah: " + file.name;
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var data = e.target.result;
+                    var workbook = XLSX.read(data, {
+                        type: 'binary'
+                    });
+
+                    // Ambil data dari sheet pertama
+                    var sheetName = workbook.SheetNames[0];
+                    var sheet = workbook.Sheets[sheetName];
+                    var jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+                    // Tampilkan data di tabel
+                    displayData(jsonData);
+                };
+                reader.readAsBinaryString(file);
+            }
+        }
+
+        // Fungsi untuk menampilkan data Excel ke dalam tabel HTML
+        function displayData(data) {
+            var tableBody = document.getElementById('data-paket').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = ""; // Clear existing rows
+
+            // Loop untuk memasukkan data ke dalam tabel
+            data.forEach(function(row, index) {
+                if (index > 0) {  // Skip header row
+                    var tr = document.createElement('tr');
+                    // Sesuaikan data berdasarkan kolom dari Excel
+                    for (let i = 0; i < row.length; i++) {
+                        var td = document.createElement('td');
+                        td.textContent = row[i];
+                        tr.appendChild(td);
+                    }
+                    tableBody.appendChild(tr);
+                }
+            });
+        }
+    </script>
 
 </body>
 </html>
