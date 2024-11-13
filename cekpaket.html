@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Paket - Admin Dashboard</title>
+    <style>
+        /* Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Cek Paket</h1>
+
+        <!-- Tabel Daftar Paket -->
+        <table id="packageTable">
+            <thead>
+                <tr>
+                    <th>ID Paket</th>
+                    <th>Nama Penerima</th>
+                    <th>Nomor WA</th>
+                    <th>No Resi</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data Paket akan dimasukkan di sini oleh JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Ambil data paket dari localStorage
+        let packages = JSON.parse(localStorage.getItem('packages')) || [];
+
+        // Menampilkan paket dalam tabel
+        function displayPackages() {
+            const tbody = document.querySelector('#packageTable tbody');
+            tbody.innerHTML = ''; // Kosongkan tabel sebelum diisi
+            packages.forEach(pkg => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${pkg.id}</td>
+                    <td>${pkg.receiver}</td>
+                    <td>${pkg.sender}</td>
+                    <td>${pkg.resi}</td>
+                    <td>${pkg.status}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Tampilkan data paket ketika halaman dimuat
+        displayPackages();
+    </script>
+
+</body>
+</html>

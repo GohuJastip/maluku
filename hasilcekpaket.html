@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Cek Paket</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        header {
+            text-align: center;
+            background-color: #4CAF50;
+            color: white;
+            padding: 6px 0;
+        }
+
+        header p {
+            font-size: 12px;
+        }
+
+        .status-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .status-container p {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 4px;
+            background-color: #4CAF50;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            font-size: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>Status Cek Paket</h1>
+        <p>Hasil pengecekan status paket Anda</p>
+    </header>
+
+    <!-- Hasil Cek Paket -->
+    <div class="status-container">
+        <p id="status-text">Sedang memuat status paket...</p>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Jasa Titip. Semua hak dilindungi.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Fungsi untuk mendapatkan query parameter dari URL
+        function getQueryParam(param) {
+            let urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        window.onload = function() {
+            // Mengambil nomor resi dari query parameter
+            let resi = getQueryParam('resi');
+            
+            if (resi) {
+                // Misalnya, jika nomor resi berakhiran '123', anggap statusnya dalam proses
+                let status = (resi.slice(-3) === "123") ? "Dalam Proses" : "Tidak Ditemukan";
+                
+                // Menampilkan status cek paket
+                document.getElementById("status-text").textContent = "Status paket untuk resi " + resi + ": " + status;
+            } else {
+                document.getElementById("status-text").textContent = "Nomor resi tidak ditemukan.";
+            }
+        };
+    </script>
+
+</body>
+</html>

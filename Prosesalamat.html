@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informasi Alamat</title>
+    <style>
+        /* Reset margin dan padding untuk seluruh elemen */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Setel body dengan latar belakang gradien biru ke hijau */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4e73df, #1cc88a); /* Gradien biru ke hijau */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;  /* Full screen height */
+            width: 100%;    /* Full screen width */
+            color: #fff;    /* Teks putih untuk kontras */
+            background-attachment: fixed; /* Efek latar belakang tetap ketika scroll */
+            flex-direction: column; /* Menyusun elemen dalam kolom */
+        }
+
+        /* Keterangan untuk instruksi copypaste tanpa latar belakang */
+        .instruction {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            width: 80%; /* Lebar keterangan tidak terlalu lebar */
+            max-width: 500px;
+            margin-top: 20px; /* Memberikan jarak atas */
+        }
+
+        /* Desain container seperti layar ponsel dengan latar belakang modern */
+        .phone-screen {
+            width: 100%;
+            max-width: 400px;  /* Maksimal lebar layar */
+            background: #ffffff; /* Warna latar belakang putih */
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Bayangan lembut */
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Box informasi alamat */
+        .info-box {
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            background: #f9f9f9;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #333;
+            position: relative;
+        }
+
+        .info-box p {
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .info-box p strong {
+            font-weight: 600;
+            color: #555;
+        }
+
+        /* Tombol "Ubah Alamat" */
+        .change-address-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            margin-bottom: 20px; /* Memberikan ruang antara tombol dan info box */
+        }
+
+        .change-address-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* Responsif untuk perangkat mobile */
+        @media (max-width: 600px) {
+            .phone-screen {
+                width: 90%;
+                height: auto; /* Agar tidak terlalu besar di layar kecil */
+            }
+
+            .info-box {
+                font-size: 16px; /* Menyesuaikan ukuran font pada layar kecil */
+                padding: 15px;
+            }
+
+            .change-address-btn {
+                font-size: 18px; /* Ukuran tombol lebih besar di layar kecil */
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Menambahkan keterangan instruksi copypaste di luar phone-screen -->
+    <div class="instruction">
+        Silakan copypaste untuk mengedit alamat teman-teman. Ikuti sesuai keterangan 
+        di bawah ini agar tidak terjadi kesalahan. bisa digunakan untuk alamat di Shopee, Tokopedia, Lazada, TikTok, dan platform lainnya!
+    </div>
+
+    <div class="phone-screen">
+        <div class="info-box">
+            <!-- Menampilkan informasi kontak -->
+            <p><strong>Nama Lengkap </strong><br><span id="displayKontak">Loading...</span></p>
+            <p><strong>Nomor Telepon </strong><br>081244801294</p>
+            <p><strong>Provinsi, Kota, Kecamatan, Kode Pos:</strong><br>DKI JAKARTA<br>KOTA JAKARTA TIMUR<br>CILILITAN<br>13640</p>
+            <p><strong>Nama Jalan, Gedung, No. Rumah </strong><br>Gohujastip Kontrakan oren, Gg. Alisarbi Cililitan 13640 RT.08 RW.09 No. 11A (GH0 <span id="displayNama">Nama</span> <span id="displayWA">Nomor WA</span>)</p>
+        </div>
+
+    </div>
+
+    <script>
+        // Mengambil data nama dan WA dari localStorage
+        var nama = localStorage.getItem("nama") || "Data tidak ditemukan";
+        var wa = localStorage.getItem("wa") || "Data tidak ditemukan";
+
+        // Menampilkan data pada elemen HTML
+        document.getElementById("displayKontak").textContent = "GH0 " + nama + " " + wa;
+        document.getElementById("displayNama").textContent = nama;
+        document.getElementById("displayWA").textContent = wa;
+
+        // Menangani event untuk tombol "Ubah Alamat"
+        document.querySelector(".change-address-btn").addEventListener("click", function() {
+            alert("Fitur Ubah Alamat sedang dalam pengembangan!");
+        });
+    </script>
+</body>
+
+</html>
